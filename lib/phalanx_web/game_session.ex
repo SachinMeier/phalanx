@@ -51,13 +51,13 @@ defmodule PhalanxWeb.GameSession do
       # Session doesn't exist. They are attempting to join a new game.
       socket =
         case Phalanx.Game.find_by_id(game_id) do
-          {:ok, _} ->
+          :ok ->
             socket
             |> redirect(to: ~p"/game/#{game_id}")
 
           {:error, :not_found} ->
             socket
-            |> put_flash(:error, "Game not found")
+            |> put_flash(:error, "Game #{game_id} not found")
             |> redirect(to: ~p"/find")
         end
 

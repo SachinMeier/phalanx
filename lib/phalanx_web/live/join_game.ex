@@ -4,7 +4,7 @@ defmodule PhalanxWeb.Live.JoinGame do
   @impl true
   def mount(%{"id" => game_id} = _params, session, socket) do
     case Phalanx.Game.find_by_id(game_id) do
-      {:ok, _} ->
+      :ok ->
         socket
         |> assign(
           game_id: game_id,
@@ -35,7 +35,6 @@ defmodule PhalanxWeb.Live.JoinGame do
             <div>
               <.input
                 name="player_name"
-                field="player_name"
                 type="text"
                 value=""
                 placeholder="Enter your player name"

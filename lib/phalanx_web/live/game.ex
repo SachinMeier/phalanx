@@ -45,6 +45,7 @@ defmodule PhalanxWeb.Live.Game do
   @rotation_keys rotation_keys()
   @unit_keys unit_keys()
 
+  @impl true
   def handle_event("hotkey", %{"key" => key}, socket) do
     case key do
       key when key in @move_keys ->
@@ -128,6 +129,7 @@ defmodule PhalanxWeb.Live.Game do
     |> noreply()
   end
 
+  @impl true
   def handle_info({:state, state}, socket) do
     assign(socket, :state, state)
     |> assign(:orders, %{})

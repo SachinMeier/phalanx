@@ -9,7 +9,7 @@ defmodule PhalanxWeb.Live.NewGame do
   @impl true
   def render(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_scope={:public}>
+    <Layouts.app flash={@flash}>
       <div class="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
         <div class="text-center space-y-8 p-8">
           <h1 class="text-6xl font-bold text-white mb-4 tracking-wide">

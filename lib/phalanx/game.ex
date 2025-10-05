@@ -106,7 +106,7 @@ defmodule Phalanx.Game do
 
   @impl true
   def handle_call(:get_state, _from, state) do
-    IO.inspect(state, label: "get_state")
+    # IO.inspect(state, label: "get_state")
     reply(state, state)
   end
 
