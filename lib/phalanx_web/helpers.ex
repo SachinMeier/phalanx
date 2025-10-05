@@ -92,6 +92,7 @@ defmodule PhalanxWeb.Helpers do
       "K" -> "text-purple-500"
       "L" -> "text-purple-500"
       "M" -> "text-purple-500"
+      _ -> ""
     end
   end
 end

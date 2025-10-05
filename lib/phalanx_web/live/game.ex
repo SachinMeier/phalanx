@@ -234,8 +234,8 @@ defmodule PhalanxWeb.Live.Game do
     </div>
     <div class="flex flex-col">
       <%= for {position, order} <- @orders do %>
-        <% name = @state.units[order.position].name %>
-        <div class={"text-center py-2 #{unit_letter_to_color(name)}"}>
+        <% name = get_in(@state.units, [order.position, :name]) %>
+        <div :if={name != nil} class={"text-center py-2 #{unit_letter_to_color(name)}"}>
           <%= name %>: <%= Phalanx.Order.to_string(order) %>
         </div>
       <% end %>
