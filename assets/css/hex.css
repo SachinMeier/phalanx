@@ -1,0 +1,71 @@
+
+.hex-tile-grid-wrapper {
+	display: flex;
+	max-width: 60vw;
+	margin: 0 auto;
+	--s: 5.5vw;
+	--m: .1vw;
+	--f: calc(var(--s) * 1.732 + 4 * var(--m) - 1px);
+}
+
+.compass-hex-tile-grid-wrapper {
+	display: flex;
+	max-width: 30vw;
+	margin: 0 auto;
+	--s: 2.75vw;
+	--m: .05vw;
+	--f: calc(var(--s) * 1.732 + 4 * var(--m) - 1px);
+}
+
+.hex-tile-grid {
+	font-size: 0; 
+	/* display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	grid-template-rows: repeat(12, 1fr);
+	grid-gap: var(--m);  */
+}
+
+.compass-hex-tile-grid {
+	font-size: 0; 
+}
+
+.hex-tile {
+	width: var(--s);
+	margin: var(--m);
+	height: calc(var(--s) * 1.1547);
+	display: inline-block;
+	font-size: initial; 
+  	background-color: black;
+	clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+	margin-bottom: calc(var(--m) - var(--s) * 0.2886);
+	padding: calc(var(--s) * 0.12);
+	position: relative;
+}
+
+.hex-tile > div {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.hex-tile-grid::before {
+	content: "";
+	width: calc(var(--s)/2 + var(--m));
+	float: left;
+	height: 100%;
+	shape-outside: repeating-linear-gradient(#0000 0 calc(var(--f) - 3px), #000 0 var(--f));
+} 
+
+.compass-hex-tile-grid::before {
+	content: "";
+	width: calc(var(--s)/2 + var(--m));
+	float: left;
+	height: 100%;
+	shape-outside: repeating-linear-gradient(#0000 0 calc(var(--f) - 3px), #000 0 var(--f));
+} 
