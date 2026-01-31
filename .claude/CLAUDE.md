@@ -59,9 +59,15 @@ Two armies face one another, each seeking to **flank** the enemy. A phalanx is d
 - **Emergent complexity**: Simple rules create tactical depth through interaction
 - **Balance the triangle**: Maneuverability vs side-grouping vs depth—no dominant strategy
 
+### Design Decisions (Resolved)
+
+| Question | Decision | Reference |
+|----------|----------|-----------|
+| Grouping | Explicit phalanx declaration during battle | `plans/group/spec.md` |
+| Win conditions | Elimination first, extensible via game modes | `plans/game-modes/spec.md` |
+
 ### Open Questions for Engine Design
 
-- Implicit vs explicit grouping (auto-detect phalanx or player-declared?)
 - HP/damage vs retreat-when-overpowered (Diplomacy-style)
 - Force calculation formula (additive? multiplicative? diminishing returns?)
 - How flanking attacks interact with formation bonuses
@@ -133,7 +139,12 @@ Movement constrained by rotation (facing direction):
   turn: 0,
   players: [%Player{name: "...", token: "..."}],
   units: %{{3, 2} => %{name: "Y", health: 3, rotation: 240, color: "red"}},
-  map_dimensions: {10, 10}
+  map_dimensions: {10, 10},
+
+  # Game Mode (backend only, not exposed to frontend initially)
+  game_mode: :elimination_standard,
+  mode_state: %{},
+  winner: nil  # :team_a | :team_b | :draw | nil
 }
 
 # Order
@@ -143,6 +154,17 @@ Movement constrained by rotation (facing direction):
   rotation: :clockwise     # or :counterclockwise or nil
 }
 ```
+
+## Game Modes
+
+Game modes define win conditions and team configurations. Currently backend-only (not exposed in UI).
+
+| Mode | Win Condition | Notes |
+|------|---------------|-------|
+| `:elimination_standard` | Destroy all enemy units | Default, 5v5 symmetric |
+| `:siege_basic` | Attacker: eliminate defenders. Defender: survive N turns | Future: asymmetric |
+
+Win condition is checked after the damage phase in the engine pipeline. See `plans/game-modes/spec.md`.
 
 ## Keyboard Controls
 
@@ -174,3 +196,6 @@ Movement constrained by rotation (facing direction):
 | Hex CSS | `assets/css/hex.css` |
 | Keyboard handler | `assets/js/hotkeys.js` |
 | Game mechanics doc | `MECHANICS.md` |
+| Planning specs | `plans/` |
+| Game modes spec | `plans/game-modes/spec.md` |
+| Architecture spec | `plans/architecture.md` |

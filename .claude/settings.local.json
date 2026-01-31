@@ -1,8 +1,19 @@
 {
   "permissions": {
     "allow": [
+      "WebSearch*",
+      "Web Search*",
+      "WebFetch*",
+      "Edit*",
+      "Edit(**)",
+      "Bash(asdf install:*)",
+      "Bash(asdf local:*)",
+      "Bash(for i in {1..10})",
+      "Bash(do sed -i '' 's|~p\"\"/mockups\"\"|~p\"\"/mockups/modern\"\"|g' mockup$i.ex)",
+      "Bash(done)",
+      "Bash(do sed -i '' 's|\"\"/mockups\"\"|\"\"/mockups/modern\"\"|g' mockup$i.ex)",
       "WebSearch",
-      "WebFetch(domain:www.britannica.com)"
+      "WebFetch(domain:adryh.itch.io)"
     ]
   }
 }

@@ -213,7 +213,7 @@ On receiving damage:
 
 ### 4.1 Phalanx Group Highlight
 
-Show detected phalanx formations with connecting visual.
+Show declared phalanx formations with connecting visual.
 
 **Option A: Glow outline** (Recommended)
 - Shared glow color around grouped units
@@ -538,11 +538,9 @@ export const Resolution = {
 
 1. **Animation speed preference**: Should players be able to adjust? Checkbox for "instant resolution"?
 
-2. **Mobile touch**: Hover-based tooltips don't work. Tap-and-hold? Dedicated info button?
+2. **Colorblind modes**: Red/green damage indicators may be problematic. Use shapes or patterns?
 
-3. **Colorblind modes**: Red/green damage indicators may be problematic. Use shapes or patterns?
-
-4. **Sound effects**: Scope creep, but audio feedback significantly improves feel. Defer to separate spec?
+3. **Sound effects**: Scope creep, but audio feedback significantly improves feel. Defer to separate spec?
 
 ---
 

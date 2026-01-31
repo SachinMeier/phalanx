@@ -13,17 +13,27 @@ Units in a phalanx move atomically.
 
 A phalanx is only dislodged if a majority of its members would be dislodged. 
 
-## Health 
+## Health
 
-Being dislodged, regardless of direction = -1 health
-Being attacked on a flank = -1 health
-Being attacked from behind = -2 health
+**Damage stacks from two sources:**
 
-counterparallel means at a 0deg or 60deg angle against one another. 
+| Source | HP Lost |
+|--------|---------|
+| Dislodged | 1 |
+| Flank attack angle | +1 |
+| Rear attack angle | +2 |
+| Frontal attack angle | +0 (shields block) |
 
-Being attacked while moving anything but counterparallel = -1 health
+**Total damage on dislodge:**
+- Frontal dislodge: 1 HP (dislodge only, shields block angle damage)
+- Flank dislodge: 1 + 1 = 2 HP
+- Rear dislodge: 1 + 2 = 3 HP
 
-These accumulate, so being dislodged by a flanking attack = -2 health
+**Key points:**
+- Damage only applies to dislodged units
+- Dislodge always costs 1 HP regardless of angle
+- Flanking adds EXTRA damage on top of dislodge cost
+- Flanking affects damage only, NOT strength
 
 Open Questions:
 

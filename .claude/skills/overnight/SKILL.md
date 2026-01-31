@@ -6,7 +6,7 @@ user-invocable: true
 
 # Overnight
 
-Run uninterrupted for hours. Delegate everything. Return comprehensive results.
+Run uninterrupted as long as needed to complete the task(s). Delegate everything to subagents. Write all relevant results, plans, etc. to markdown files. Return comprehensive results.
 
 ## When to Use
 
@@ -50,7 +50,7 @@ INITIALIZE → DECOMPOSE → EXECUTE → CONSOLIDATE → SUMMARIZE
 
 ### Phase: INITIALIZE
 
-1. Create run directory: `~/.local/state/imp1/runs/overnight-{YYMMDD}/`
+1. Create run directory: `plans/overnight-{YYMMDD}/`
 2. Parse work request for:
    - Primary objective
    - Skill directives (/spec-manager, /warrior, etc.)
@@ -146,7 +146,7 @@ Create `OVERNIGHT-SUMMARY.md` in run directory:
 
 At session end, ensure:
 
-1. **Run directory** with all artifacts: `~/.local/state/imp1/runs/overnight-{YYMMDD}/`
+1. **Run directory** with all artifacts: `plans/overnight-{YYMMDD}/`
 2. **OVERNIGHT-SUMMARY.md** in run directory
 3. **Task list** showing all completed work
 4. **Final message** to user with:

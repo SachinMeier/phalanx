@@ -184,14 +184,18 @@ Combat occurs when units attempt to move into each other or when adjacent at tur
 Base strength: **1**
 
 **Formation Bonus** (Phalanx):
-- +1 per adjacent allied unit facing the same direction
+- +1 per adjacent allied unit facing the same direction AND moving the same direction this turn
 - Maximum: +2
+- **IMPORTANT**: Both rotation AND movement must match. Units moving different directions get NO formation bonus from each other.
 
 **Support Bonus**:
 - +1 per allied unit directly behind, pushing in the same direction
 - Maximum: +2
 
-**Total maximum strength**: 1 (base) + 2 (formation) + 2 (support) = **5**
+**Combined Attack**:
+When multiple allies attack the same enemy hex, their forces ADD together. The first unit ordered to attack that hex is the "lead" - upon victory, only the lead moves in; other attackers hold position.
+
+**Total maximum strength**: 1 (base) + 2 (formation) + 2 (support) = **5** (single unit), or higher with combined attacks
 
 ### Flanking Bonus (Attacker)
 
@@ -208,7 +212,9 @@ Dislodged units are pushed back and take damage.
 
 ### Phalanx Rule
 
-Units in a **phalanx** (adjacent, same facing) move and fight as one. A phalanx is only dislodged if a **majority** of its members would be dislodged individually.
+Units in a **phalanx** (adjacent, same facing, **same movement direction**) move and fight as one. A phalanx is only dislodged if a **majority** of its members would be dislodged individually.
+
+**Critical**: Formation bonuses only apply when units share both facing AND movement. A unit rotating while its neighbor advances breaks the formation bond for that turn.
 
 ---
 
@@ -241,9 +247,14 @@ Damage stacks. Being dislodged by a flanking attack = -1 (dislodge) + -1 (flank)
 ### Forced Retreat
 
 A dislodged unit must retreat to an adjacent hex:
-- Opposite the direction of attack
+- **Must be AWAY from the attacker** (opposite direction from where the attack came)
 - Cannot retreat into occupied hexes
 - Cannot retreat off the map
+- Cannot retreat into standoff hexes (where ties occurred)
+
+If attacked by multiple units, retreat must be away from ALL attackers.
+
+**Retreat selection**: If multiple valid retreat hexes exist, one is chosen randomly.
 
 ### No Retreat = Death
 
@@ -285,11 +296,14 @@ Each unit has **3 energy** (maximum 3, minimum 0).
 
 ### Exhaustion
 
-At turn end, if a unit has **0 energy**, it takes **-1 HP** (exhaustion damage).
+**Zero-energy penalty is TBD.** Options under consideration:
+- -1 HP at turn end (exhaustion damage)
+- Unit can't receive orders until energy recovers
+- Reduced combat strength
 
 ### Energy Strategy
 
-- 3 consecutive forward moves = 0 energy = exhaustion damage
+- 3 consecutive forward moves = 0 energy
 - Aggressive pursuit exhausts units
 - Defensive holding recovers energy (only if not attacked)
 - Alternate advance and rest for sustained offense
@@ -431,7 +445,7 @@ If B is attacked, the support is nullified.
 | Flanked | -1 |
 | Rear attack | -2 |
 | Non-counterparallel attack | -1 |
-| Exhaustion (0 energy) | -1 |
+| Exhaustion (0 energy) | TBD |
 
 ### Energy Costs
 | Action | Energy |

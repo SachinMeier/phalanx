@@ -26,7 +26,7 @@
 
 **Out of Scope**:
 * **Combat damage**: Handled by Combat spec
-* **Force calculation**: Handled by Force spec
+* **Force calculation**: Handled by Strength spec
 * **Group movement**: Handled by Grouping spec
 * **Terrain effects on energy**: Future work
 
@@ -233,7 +233,7 @@ Do groups share energy? Does group movement cost differ?
 | Shared pool | Group has combined energy | Simplifies tracking. Group rises and falls together. | Completely different mechanic. What happens when groups merge/split? |
 | Group discount | Group movement costs less (-0.5 per unit?) | Rewards formation movement. | Fractional energy. Complex. |
 
-**Recommendation**: Individual energy tracking. Groups are for atomic movement and majority-rule balking, not resource sharing.
+**Recommendation**: Individual energy tracking. Groups are organizational; phalanxes are for atomic movement (all-or-nothing balking), not resource sharing.
 
 ---
 
@@ -567,7 +567,7 @@ Each unit in a group calculates energy independently. A group where half the uni
 
 ### Balk in Group
 
-If a group balks due to majority rule, all units in the group get 0 energy change (balk effect).
+If a phalanx balks (all-or-nothing: any member blocked = all balk), all phalanx members get 0 energy change (balk effect).
 
 ### Rotation During Movement
 
@@ -679,7 +679,21 @@ Setup: Group of 2 units. Unit A at energy 2, Unit B at energy 3. Group moves for
 
 ## 10. Open Questions
 
-None. All design decisions resolved.
+### Zero-Energy Penalty (UNDECIDED)
+
+What happens when a unit reaches 0 energy?
+
+| Option | Effect | Pros | Cons |
+|--------|--------|------|------|
+| -1 HP at turn end | Unit takes attrition damage | Creates urgency to recover. Punishes overextension. | May be too harsh. Compounds with combat damage. |
+| Unit can't receive orders | Frozen until energy recovers | Thematic (exhausted = can't act). No HP loss. | May feel frustrating. Creates sitting ducks. |
+| Movement only (no attack) | Can retreat/reposition but not fight | Allows escape. Less punishing. | Complex rule. What about rotation? |
+| Reduced strength | -1 or -2 to combat strength | Weakens but doesn't disable. | Another modifier to track. |
+| No penalty | 0 is just the floor | Simplest. Energy still matters for forward movement. | Removes tension. Why track energy? |
+
+**Current placeholder**: -1 HP at turn end (per MECHANICS.md), but this decision is open for discussion.
+
+**Playtesting Note**: Energy balance concerns (whether the current costs/recovery rates create fair gameplay) are deferred to playtesting. The energy system is expected to balance aggressive pursuit vs defensive holding, but actual balance will be verified through play.
 
 ---
 

@@ -32,26 +32,95 @@ defmodule PhalanxWeb.Components.Hex do
     """
   end
 
+  @doc """
+  Renders a unit as a regular hexagon with chevron health bars.
+
+  The chevrons form an arrow pointing in the facing direction.
+  Health bars are parallel to the top-left and top-right hex edges.
+
+  ## Geometry
+  - Regular pointy-top hexagon (all sides equal, all angles 120°)
+  - ViewBox 100x115.47 for clean math (height = width × 2/√3)
+  - Chevron slopes match hex edges exactly: ±1/√3 ≈ ±0.5774
+  """
   attr :unit, :map, required: true
   attr :current_unit, :any, required: true
   attr :x, :integer, required: true
   attr :y, :integer, required: true
+  attr :size, :integer, default: 50
 
   def unit_svg(assigns) do
-    assigns = assign(assigns, :w, 50)
     ~H"""
-    <svg width={@w} height={"#{@w*1.1547}"} class={"#{rotation_class(@unit.rotation)}"}>
-      <polygon points={"#{@w*0.5},0 #{@w},#{@w*0.2887} #{@w},#{@w*0.866} #{@w*0.5},#{@w*1.1547} 0,#{@w*0.866} 0,#{@w*0.2887}"} fill={@unit.color} />
+    <svg
+      viewBox="0 0 100 115.47"
+      width={@size}
+      height={@size * 1.1547}
+      class={rotation_class(@unit.rotation)}
+    >
+      <%!-- Regular hexagon: 6 vertices at 60° intervals --%>
+      <polygon
+        points="50,0 100,28.87 100,86.6 50,115.47 0,86.6 0,28.87"
+        fill={@unit.color}
+      />
 
-        <path :if={@unit.health > 0} d={"M 4,#{@w*0.8} L 4,#{@w*0.34} L #{@w*0.5},4"} stroke={active_fill(@current_unit, {@x, @y})} stroke-width="2" fill="none" />
-        <path :if={@unit.health > 1} d={"M 8,#{@w*0.8} L 8,#{@w*0.38} L #{@w*0.55},7"} stroke={active_fill(@current_unit, {@x, @y})} stroke-width="2" fill="none" />
-        <path :if={@unit.health > 2} d={"M 12,#{@w*0.8} L 12,#{@w*0.42} L #{@w*0.6},11"} stroke={active_fill(@current_unit, {@x, @y})} stroke-width="2" fill="none" />
+      <%!--
+        Health chevrons: nested arrow formation indicating facing direction.
+        Each chevron's arms are parallel to the top-left and top-right hex edges.
+        Slope = ±1/√3 ≈ ±0.5774 (30° from horizontal)
+      --%>
 
-        <text x={"#{@w*0.5}"} y={"#{@w*0.577}"} text-anchor="middle" dominant-baseline="middle" fill={active_fill(@current_unit, {@x, @y})} font-size="12" font-weight="bold" transform={"rotate(#{-@unit.rotation}, #{@w*0.5}, #{@w*0.577})"}>
-          <%= @unit.name %>
-        </text>
+      <%!-- Outermost chevron (health >= 1) --%>
+      <polyline
+        :if={@unit.health > 0}
+        points="15,35.21 50,15 85,35.21"
+        stroke={bar_stroke(@current_unit, {@x, @y})}
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+
+      <%!-- Middle chevron (health >= 2) --%>
+      <polyline
+        :if={@unit.health > 1}
+        points="25,39.44 50,25 75,39.44"
+        stroke={bar_stroke(@current_unit, {@x, @y})}
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+
+      <%!-- Innermost chevron (health >= 3) --%>
+      <polyline
+        :if={@unit.health > 2}
+        points="35,43.66 50,35 65,43.66"
+        stroke={bar_stroke(@current_unit, {@x, @y})}
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+
+      <%!-- Unit name (counter-rotated to stay upright) --%>
+      <text
+        x="50"
+        y="78"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        fill={bar_stroke(@current_unit, {@x, @y})}
+        font-size="24"
+        font-weight="bold"
+        transform={"rotate(#{-@unit.rotation}, 50, 57.735)"}
+      >
+        <%= @unit.name %>
+      </text>
     </svg>
     """
+  end
+
+  defp bar_stroke(current_unit, position) do
+    if current_unit == position, do: "chartreuse", else: "white"
   end
 
   defp rotation_class(rotation) do

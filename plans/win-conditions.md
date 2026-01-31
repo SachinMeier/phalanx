@@ -1,12 +1,18 @@
-# Win Conditions and Game Modes
+# Win Conditions Reference
 
-Design document for Phalanx victory mechanics and gameplay variants.
+Reference document describing victory condition types for Phalanx.
 
-## Win Conditions
+**Authoritative implementation spec**: `plans/game-modes/spec.md`
+
+Win conditions are defined as part of game mode configurations. This document serves as background material for the condition types themselves.
+
+---
+
+## Win Condition Types
 
 ### 1. Elimination
 
-**Rule**: Destroy all enemy units.
+Destroy all enemy units.
 
 | Pros | Cons |
 |------|------|
@@ -14,13 +20,11 @@ Design document for Phalanx victory mechanics and gameplay variants.
 | No additional state tracking | Snowball: losing side has fewer options |
 | Natural conclusion | May discourage tactical retreat |
 
-**Implementation**: Check `units` map for remaining team colors after each turn.
-
 ---
 
 ### 2. Objective Control
 
-**Rule**: Hold designated hexes for N consecutive turns OR accumulate control points.
+Hold designated hexes for N consecutive turns, or accumulate control points.
 
 **Variants**:
 - **Domination**: Hold 3+ of 5 control points simultaneously
@@ -33,22 +37,11 @@ Design document for Phalanx victory mechanics and gameplay variants.
 | Rewards positioning over attrition | Additional state: turn counters per hex |
 | Comeback mechanics possible | Can feel arbitrary |
 
-**Implementation**:
-```elixir
-%Game{
-  objectives: %{
-    {5, 5} => %{controller: :red, held_turns: 2},
-    {3, 7} => %{controller: nil, held_turns: 0}
-  },
-  scores: %{red: 3, purple: 1}
-}
-```
-
 ---
 
 ### 3. Push Victory
 
-**Rule**: Move any unit to enemy's back row (row 0 for red, row 9 for purple on 10x10).
+Move any unit to enemy's back row (row 0 for red, row 9 for purple on 10x10).
 
 | Pros | Cons |
 |------|------|
@@ -56,13 +49,11 @@ Design document for Phalanx victory mechanics and gameplay variants.
 | Creates natural front line | May ignore tactical depth |
 | Fast resolution | Heavily favors mobile units |
 
-**Implementation**: Check unit positions after movement phase. Single unit reaching goal row triggers immediate win.
-
 ---
 
 ### 4. Morale/Rout
 
-**Rule**: Lose 50%+ of starting units = army breaks. Remaining units flee.
+Lose 50%+ of starting units, and the army breaks.
 
 | Pros | Cons |
 |------|------|
@@ -70,19 +61,11 @@ Design document for Phalanx victory mechanics and gameplay variants.
 | Historically plausible | Comebacks harder |
 | Avoids grinding last units | "Almost won" frustration |
 
-**Implementation**:
-```elixir
-%Game{
-  starting_unit_counts: %{red: 5, purple: 5},
-  rout_threshold: 0.5
-}
-```
-
 ---
 
 ### 5. Turn Limit + Victory Points
 
-**Rule**: Fixed turn count (e.g., 20). Most VP wins.
+Fixed turn count. Most VP wins.
 
 **VP Sources**:
 - Unit elimination: 1 VP per unit
@@ -98,66 +81,55 @@ Design document for Phalanx victory mechanics and gameplay variants.
 
 ---
 
-## Recommended Default
+## Integration with Game Modes
 
-**Primary**: Elimination (simple, clear)
-**Secondary**: Turn limit with VP (for competitive/timed play)
+Win conditions are now embedded within game mode definitions. Each mode specifies:
 
-Start with elimination. Add objective control once terrain/map variety exists.
+- Which condition type applies
+- Condition-specific parameters (thresholds, turn limits, objectives)
+- Victory evaluation logic
 
----
-
-## Game Modes
-
-### 1. Standard (1v1)
-
-- Equal unit count per side
-- Symmetric map (or rotationally symmetric)
-- Identical unit compositions
-- Pure skill test
-
-**Default config**:
-- 5 units per side
-- 10x10 grid
-- Units start on rows 0-1 (purple) and 8-9 (red)
+See `plans/game-modes/spec.md` for the full mode configuration schema.
 
 ---
 
-### 2. Quick Battle
+## Current Implementation
 
-- 3 units per side
-- 8x8 grid
-- 10 turn limit
-- Simplified VP: kills only
+**Elimination** is the only implemented win condition.
 
-Target duration: 5 minutes.
+The backend hardcodes the `:elimination_standard` game mode. No other conditions are implemented or planned for the initial release.
 
 ---
 
-### 3. Skirmish (Asymmetric)
+## Frontend Strategy
 
-- Attacker gets more units, defender gets position
-- Asymmetric win conditions
-  - Attacker: eliminate 60% of defenders OR reach objective
-  - Defender: survive N turns OR eliminate 40% of attackers
+The UI does not expose game mode selection.
 
-**Example scenario**:
-- Attacker: 7 units, starts rows 7-9
-- Defender: 4 units, starts rows 0-2, defends hex (5,1)
+- Backend defaults to `:elimination_standard` when creating games
+- Mode selection is future work, gated behind multiple condition implementations
+- When exposed, mode selection will appear on the game creation screen
 
 ---
 
-### 4. Siege
+## Implementation Priority
 
-- Defender holds fortified position (future: terrain bonuses)
-- Attacker must break through
-- Defender wins by surviving
+| Priority | Condition | Status |
+|----------|-----------|--------|
+| 1 | Elimination | Implemented via game modes |
+| 2+ | Objective Control, Rout, Turn Limit, Push Victory | Future work, not currently planned |
+
+Additional conditions require:
+- State tracking infrastructure (objectives, scores, turn counters)
+- Map editor tooling (objective placement)
+- UI for mode-specific information displays
 
 ---
 
 ## Map Design Guidelines
 
-### Grid Size
+Map requirements are now part of game mode definitions.
+
+### Grid Size Reference
 
 | Size | Units | Duration | Complexity |
 |------|-------|----------|------------|
@@ -167,7 +139,7 @@ Target duration: 5 minutes.
 
 ### Starting Positions
 
-**Symmetric**: Mirror across center horizontal axis.
+Symmetric across center horizontal axis.
 
 ```
 Row 0-1: Purple starting zone
@@ -181,44 +153,12 @@ Row 8-9: Red starting zone
 - **Flanks**: Spreads combat, rewards maneuvering
 - **Home bases**: Creates capture-the-flag dynamic
 
----
-
-## Implementation Priority
-
-1. **Elimination** - Already implicit, formalize check
-2. **Turn limit** - Add `max_turns` to Game struct
-3. **Rout** - Simple percentage check
-4. **Objective control** - Requires map/objective system first
-
----
-
-## Data Structure Changes
-
-```elixir
-defmodule Phalanx.Game do
-  defstruct [
-    # existing fields...
-
-    # Win condition config
-    win_condition: :elimination,  # :elimination | :objectives | :rout | :turn_limit
-    max_turns: nil,               # for :turn_limit mode
-    rout_threshold: 0.5,          # for :rout mode
-
-    # Objective state (when applicable)
-    objectives: %{},              # %{position => %{controller: atom, held_turns: int}}
-    scores: %{red: 0, purple: 0},
-
-    # Tracking
-    starting_unit_counts: %{},    # set at game start
-  ]
-end
-```
+See game mode definitions for specific map requirements per mode.
 
 ---
 
 ## Open Questions
 
-1. Should eliminated players spectate or leave?
-2. Draw conditions? (mutual elimination, timeout)
-3. Sudden death if turn limit reached with tie?
-4. Should objectives be visible from game start or revealed?
+1. Draw conditions? (mutual elimination, timeout)
+2. Sudden death if turn limit reached with tie?
+3. Should objectives be visible from game start or revealed?
