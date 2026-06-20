@@ -342,6 +342,20 @@ Add helpers for angle calculation and direction opposites.
 
 ---
 
+---
+
+## Alternative Models (Rejected)
+
+| Model | Summary | Why Rejected |
+|-------|---------|--------------|
+| **Pure Diplomacy** | Dislodge-only, no HP. Units retreat or disband. | Too punishing, no comeback potential. |
+| **Pure HP/Damage** | Adjacent enemies deal damage each turn. No forced retreat. | No positional consequences, becomes attrition war. |
+| **Differential Damage** | Damage = strength difference. No binary dislodge. | No movement from combat, games become static. |
+| **Retreat-or-Die** | Dislodge requires valid retreat hex or instant death. | Too harsh, games decided in first turns. |
+| **Cascade with HP Cost** | Each unit in retreat cascade takes damage. | Second damage source, reduces comeback potential. |
+
+---
+
 ## References
 
 - [Diplomacy Rules - Ultra Board Games](https://www.ultraboardgames.com/diplomacy/game-rules.php)
